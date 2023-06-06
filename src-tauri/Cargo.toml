@@ -1,5 +1,5 @@
 [package]
-name = "WAIUA_RE"
+name = "waiua_re"
 version = "0.0.0"
 description = "An app to get current match infos on valorant"
 authors = ["letchepare"]
