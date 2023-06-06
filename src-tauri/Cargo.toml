@@ -1,11 +1,11 @@
 [package]
-name = "WAIUA-RE"
+name = "WAIUA_RE"
 version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "An app to get current match infos on valorant"
+authors = ["letchepare"]
 license = ""
-repository = ""
-edition = "2021"
+repository = "https://gitlab.com/letchepare/waiua_re"
+edition = "2023"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "WAIUA-RE"
+name = "WAIUA_RE"
 version = "0.0.0"
 dependencies = [
  "reqwest",
