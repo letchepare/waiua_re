@@ -5,7 +5,7 @@ description = "An app to get current match infos on valorant"
 authors = ["letchepare"]
 license = ""
 repository = "https://gitlab.com/letchepare/waiua_re"
-edition = "2023"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
