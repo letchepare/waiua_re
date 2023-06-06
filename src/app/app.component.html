@@ -1,0 +1,63 @@
+<div class="header">
+  <span class="item">
+    <button>
+      <fa-icon [icon]="faCog" size="2x"></fa-icon>
+    </button>
+  </span>
+  <span class="item">Votre Groupe</span>
+  <span class="item">Statut</span>
+  <span class="item end">
+    <button>
+      <fa-icon [icon]="faInfo" size="2x"></fa-icon>
+    </button>
+  </span>
+</div>
+
+<div class="container-teams">
+  <div class="team-a">
+    <app-player-card name="Lililomgo#0210" ></app-player-card>
+    <app-player-card name="Lililomgo#0211"></app-player-card>
+    <app-player-card name="Lililomgo#0212"></app-player-card>
+    <app-player-card name="Lililomgo#0213"></app-player-card>
+    <app-player-card name="Lililomgo#0214"></app-player-card>
+  </div>
+  <hr>
+  <div class="team-b">
+    <app-player-card name="w00ty#8008"></app-player-card>
+    <app-player-card name="w00ty#1008"></app-player-card>
+    <app-player-card name="w00ty#2008"></app-player-card>
+    <app-player-card name="w00ty#3008"></app-player-card>
+    <app-player-card name="w00ty#4008"></app-player-card>
+  </div>
+</div>
+
+<!-- <div class="container">
+  <h1>Welcome to WAIUA-RE!</h1>
+  <div class="row">
+    <a href="https://tauri.app" target="_blank">
+      <img src="/assets/tauri.svg" class="logo tauri" alt="Tauri logo" />
+    </a>
+    <a href="https://angular.io" target="_blank">
+      <img src="/assets/angular.svg" class="logo angular" alt="Angular logo" />
+    </a>
+  </div>
+  <p>Click on the logos to learn more about the frameworks</p>
+
+  <form class="row" (submit)="greet($event, greetInput.value)">
+    <input #greetInput id="greet-input" placeholder="Enter a name..." />
+    <button type="submit">Greet</button>
+  </form>
+
+  <form class="row" (submit)="afficheListAgents($event)">
+    <button type="submit">List agents</button>
+  </form>
+  <p>{{ greetingMessage }}</p>
+  <div class="row">
+    <ul>
+      <li *ngFor="let agent of agentsList">
+        {{ agent.displayName }}
+        <img [src]="agent.displayIcon" alt="" srcset="" />
+      </li>
+    </ul>
+  </div>
+</div> -->

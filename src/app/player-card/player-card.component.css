@@ -1,0 +1,162 @@
+.container {
+  display: grid;
+  background-color: #20253e;
+  grid-template-columns: 0.5fr 1.6fr 1fr 0.9fr 0.9fr;
+  grid-template-rows: 1fr;
+  grid-auto-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: "profil-banner player-infos empty-column past-stats current-rank ";
+  width: 50em;
+  padding: 1em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  box-shadow: 10px 5px 5px #2c2c2c;
+  border-radius: 25px;
+}
+
+.profil-banner {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: ".";
+  grid-area: profil-banner;
+  padding-right: 1em;
+}
+
+.player-infos {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "player-position"
+    "player-nickname"
+    "player-skins";
+  grid-area: player-infos;
+}
+
+.player-position {
+  grid-area: player-position;
+}
+
+.player-nickname {
+  grid-area: player-nickname;
+}
+
+.player-skins {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-auto-columns: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: "vandal-skin phantom-skin";
+  grid-area: player-skins;
+}
+
+.vandal-skin {
+  grid-area: vandal-skin;
+}
+
+.phantom-skin {
+  grid-area: phantom-skin;
+}
+
+.empty-column {
+  grid-area: empty-column;
+}
+
+.past-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.8fr 0.2fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "past-games-rr"
+    "past-ranks";
+  grid-area: past-stats;
+}
+
+.past-games-rr {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: "game-1-rr game-2-rr game-3-rr";
+  grid-area: past-games-rr;
+  justify-items: center;
+}
+
+.game-1-rr {
+  grid-area: game-1-rr;
+}
+
+.game-2-rr {
+  grid-area: game-2-rr;
+}
+
+.game-3-rr {
+  grid-area: game-3-rr;
+}
+
+.past-ranks {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: "rank-1-image rank-2-image rank-3-image";
+  grid-area: past-ranks;
+}
+
+.rank-1-image {
+  grid-area: rank-1-image;
+}
+
+.rank-2-image {
+  grid-area: rank-2-image;
+}
+
+.rank-3-image {
+  grid-area: rank-3-image;
+}
+
+.current-rank {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.8fr 0.2fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "current-rank-image"
+    "current-rank-rr";
+  grid-area: current-rank;
+  align-items: center;
+}
+
+.current-rank-image {
+  grid-area: current-rank-image;
+}
+
+.current-rank-rr {
+  grid-area: current-rank-rr;
+}
+.vandal-skin,.phantom-skin{
+  display: flex;
+  align-items: center;
+}
+.vandal-skin>img,.phantom-skin>img{
+  width: 100%;
+  height: auto;
+}
+
+.game-1-rr,.game-2-rr,.game-3-rr{
+  display: flex;
+  align-items: top;
+}
