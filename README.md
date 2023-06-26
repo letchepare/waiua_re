@@ -2,7 +2,7 @@
 
 [![pipeline status](https://gitlab.com/letchepare/waiua_re/badges/main/pipeline.svg)](https://gitlab.com/letchepare/waiua_re/-/commits/main)
 [![Latest Release](https://gitlab.com/letchepare/waiua_re/-/badges/release.svg)](https://gitlab.com/letchepare/waiua_re/-/releases)
-
+ 
 
 # Tauri + Yew
 
