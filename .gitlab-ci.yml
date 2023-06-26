@@ -1,5 +1,5 @@
 sonarqube-check:
-  stage: sonar-check
+  stage: deploy
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
