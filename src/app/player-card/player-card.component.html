@@ -1,32 +1,91 @@
 <div class="container">
-    <div class="profil-banner">
-        <img src="https://media.valorant-api.com/playercards/f4361ec4-4e77-48c1-fa4f-b99b03134f96/smallart.png" alt="">
+  <div class="profil-banner">
+    <span class="level-badge">{{ playerData.accountLevel }}</span>
+    <img *ngIf="!playerData.agent" [src]="playerData.image" alt="" />
+    <img
+      *ngIf="playerData.agent && playerData.agent.displayIconSmall"
+      [srcset]="playerData.agent.displayIcon + ' 2x'"
+      [alt]="playerData.agent.displayName"
+    />
+  </div>
+  <div class="player-infos">
+    <div class="player-agentname">
+      {{ playerData.agent?.displayName || "----" }}
     </div>
-    <div class="player-infos">
-      <div class="player-position">{{agent}}</div>
-      <div class="player-nickname">{{name}}</div>
-      <div class="player-skins">
-        <div class="vandal-skin"><img src="https://media.valorant-api.com/weaponskinchromas/ffc33c1e-473a-6609-3996-a787615ef467/fullrender.png" alt="bloupbloup" (click)="clickedSkin('vandal')"></div>
-        <div class="phantom-skin"><img src="https://media.valorant-api.com/weaponskinchromas/f399ce20-4d22-b504-dbae-f8907bf25135/fullrender.png"alt="rgx" (click)="clickedSkin('phantom')"></div>
+    <div class="player-nickname">{{ playerData.name }}</div>
+    <div class="player-skins">
+      <div class="vandal-skin">
+        <img
+          [src]="playerData.skins.get(weaponNames.vandal)!.image"
+          [alt]="playerData.skins.get(weaponNames.vandal)!.name"
+          (click)="clickedSkin(playerData.skins.get(weaponNames.vandal)!.name)"
+          [title]="playerData.skins.get(weaponNames.vandal)!.name"
+        />
+      </div>
+      <div class="phantom-skin">
+        <img
+          [src]="playerData.skins.get(weaponNames.phantom)!.image"
+          [alt]="playerData.skins.get(weaponNames.vandal)!.name"
+          (click)="clickedSkin(playerData.skins.get(weaponNames.vandal)!.name)"
+          [title]="playerData.skins.get(weaponNames.vandal)!.name"
+        />
       </div>
     </div>
-    <div class="empty-column"></div>
-    <div class="past-stats">
-        <div class="past-games-rr">
+  </div>
+  <div class="empty-column"></div>
+  <div class="past-stats">
+    <div class="past-games-rr">
       <div class="game-1-rr">23</div>
       <div class="game-2-rr">23</div>
       <div class="game-3-rr">23</div>
     </div>
     <div class="past-ranks">
-      <div class="rank-1-image"><img srcset="https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x" alt=""></div>
-      <div class="rank-2-image"><img srcset="https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x" alt=""></div>
-      <div class="rank-3-image"><img srcset="https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x" alt=""></div>
-    </div>
-</div>
-    <div class="current-rank">
-      <div class="current-rank-image">
-        <img srcset="https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/largeicon.png 3x" alt="">
+      <div class="rank-1-image">
+        <img
+          srcset="
+            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
+          "
+          alt="Gold 3"
+          title="Gold 3"
+        />
       </div>
-      <div class="current-rank-rr"><progress max="100" value="70"></progress></div>
+      <div class="rank-2-image">
+        <img
+          srcset="
+            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
+          "
+          alt="Gold 3"
+          title="Gold 3"
+        />
+      </div>
+      <div class="rank-3-image">
+        <img
+          srcset="
+            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
+          "
+          alt="Gold 3"
+          title="Gold 3"
+        />
+      </div>
     </div>
   </div>
+  <div class="current-rank">
+    <div class="current-rank-image">
+      <img
+        [srcset]="playerData.rank.largeIcon + ' 3x'"
+        [alt]="playerData.rank.tierName"
+        [title]="playerData.rank.tierName"
+      />
+    </div>
+    <div class="current-rank-rr">
+      <progress max="100" value="70" title="70"></progress>
+    </div>
+  </div>
+  <div
+    *ngIf="playerData.partyColour !== ''"
+    class="group-icon"
+    [style]="'background:' + playerData.partyColour"
+  >
+    <fa-icon [icon]="faUsers"></fa-icon>
+  </div>
+</div>

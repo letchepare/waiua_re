@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   display: grid;
   background-color: #20253e;
   grid-template-columns: 0.5fr 1.6fr 1fr 0.9fr 0.9fr;
@@ -12,7 +13,7 @@
   margin-top: 2em;
   margin-bottom: 2em;
   box-shadow: 10px 5px 5px #2c2c2c;
-  border-radius: 25px;
+  border-radius: 20px;
 }
 
 .profil-banner {
@@ -24,6 +25,22 @@
   grid-template-areas: ".";
   grid-area: profil-banner;
   padding-right: 1em;
+  position: relative;
+}
+.profil-banner img {
+  border-radius: 20px;
+}
+
+.level-badge {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  background: #2ee3b3;
+  text-align: center;
+  color: #043428;
+  padding: 1px 5px;
+
+  border-radius: 5px;
 }
 
 .player-infos {
@@ -33,14 +50,16 @@
   gap: 0px 0px;
   grid-auto-flow: row;
   grid-template-areas:
-    "player-position"
+    "player-agentname"
     "player-nickname"
     "player-skins";
   grid-area: player-infos;
 }
 
-.player-position {
-  grid-area: player-position;
+.player-agentname {
+  grid-area: player-agentname;
+  text-transform: bold;
+  font-size: 1.5em;
 }
 
 .player-nickname {
@@ -147,16 +166,35 @@
 .current-rank-rr {
   grid-area: current-rank-rr;
 }
-.vandal-skin,.phantom-skin{
+.vandal-skin,
+.phantom-skin {
   display: flex;
   align-items: center;
 }
-.vandal-skin>img,.phantom-skin>img{
+.vandal-skin > img,
+.phantom-skin > img {
   width: 100%;
   height: auto;
 }
 
-.game-1-rr,.game-2-rr,.game-3-rr{
+.game-1-rr,
+.game-2-rr,
+.game-3-rr {
   display: flex;
   align-items: top;
+}
+.group-icon {
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  background: #2ee3b3;
+  color: #043428;
+  border-radius: 5px;
+  border-top-right-radius: 20px;
+  top: 0;
+  right: 0;
+}
+
+.group-icon > fa-icon {
+  vertical-align: sub;
 }

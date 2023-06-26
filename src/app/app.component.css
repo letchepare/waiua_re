@@ -2,10 +2,18 @@
   filter: drop-shadow(0 0 2em #e32727);
 }
 
-.container-teams{
+.container-teams {
   padding: 3em;
   padding-top: 0;
   padding-bottom: 0;
   display: flex;
   flex-direction: row;
+}
+
+.container-teams h3 {
+  text-align: center;
+}
+
+.empty-column {
+  width: 50em;
 }

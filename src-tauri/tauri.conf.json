@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "WAIUA_RE",
-    "version": "0.0.0"
+    "version": "0.0.2"
   },
   "tauri": {
     "allowlist": {
@@ -25,12 +25,19 @@
           "https://**",
           "https://127.0.0.1/**"
         ]
+      },
+      "fs": {
+        "all": true,
+        "scope": ["**/**"]
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.letchepare.waiua",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -47,8 +54,7 @@
         "fullscreen": false,
         "resizable": true,
         "title": "WAIUA RE",
-        "width": 800,
-        "height": 600
+        "maximized": true
       }
     ]
   }
