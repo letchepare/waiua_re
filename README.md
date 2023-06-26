@@ -1,3 +1,9 @@
+# Project status:
+
+[![pipeline status](https://gitlab.com/letchepare/waiua_re/badges/main/pipeline.svg)](https://gitlab.com/letchepare/waiua_re/-/commits/main)
+[![Latest Release](https://gitlab.com/letchepare/waiua_re/-/badges/release.svg)](https://gitlab.com/letchepare/waiua_re/-/releases)
+
+
 # Tauri + Yew
 
 This template should help get you started developing with Tauri and Angular.
