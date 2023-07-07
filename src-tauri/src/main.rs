@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::{collections::HashMap, fs};
-use tauri::Manager;
 
 use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
 use reqwest::{
