@@ -1,9 +1,9 @@
-# Version 0.0.3
+# Version 0.0.4
 
 ## This version contains the following new functionnalities:
 
-- Previous rank icons. Now, while in game, you can see people's latest 3 ranks (a full episode of backlog)
+- No new feature in this release
 
 ## This version contains the following bug fixes:
 
-- no bug fixes in this release
+- Fixed a bug where the app would not do anything if one player was unrated in the last 3 acts
