@@ -4,11 +4,27 @@
 use std::{collections::HashMap, fs};
 use tauri::Manager;
 
+use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
 use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client,
 };
+use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 
+fn build_reqwest_client() -> ClientWithMiddleware {
+    let reqwest_client = Client::builder()
+        .danger_accept_invalid_certs(true)
+        .build()
+        .unwrap();
+    let client = ClientBuilder::new(reqwest_client)
+        .with(Cache(HttpCache {
+            mode: CacheMode::ForceCache,
+            manager: CACacheManager::default(),
+            options: None,
+        }))
+        .build();
+    return client;
+}
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -40,10 +56,7 @@ fn get_valorant_local_server_port() -> String {
 
 #[tauri::command]
 async fn get_player_infos(url: &str, password: &str) -> Result<String, String> {
-    let client = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .build()
-        .unwrap();
+    let client = build_reqwest_client();
 
     let res = client
         .get(url)
@@ -59,10 +72,7 @@ async fn get_player_infos(url: &str, password: &str) -> Result<String, String> {
 }
 #[tauri::command]
 async fn get_user_infos_token(url: &str, password: &str) -> Result<String, String> {
-    let client = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .build()
-        .unwrap();
+    let client = build_reqwest_client();
 
     let res = client
         .get(url)
@@ -79,10 +89,7 @@ async fn get_user_infos_token(url: &str, password: &str) -> Result<String, Strin
 
 #[tauri::command]
 async fn party_fetch_player(url: &str, bearer_token: &str) -> Result<String, String> {
-    let client = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .build()
-        .unwrap();
+    let client = build_reqwest_client();
 
     let mut headers = HeaderMap::new();
     headers.insert(

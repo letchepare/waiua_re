@@ -59,7 +59,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     }
     await this.RSOService.localLogin();
     await this.RSOService.localRegion();
-    await this.RSOService.currentSeasonId();
+    await this.RSOService.getSeasonIds();
     let matchStatus = await this.RSOService.checkMatch();
     switch (matchStatus) {
       case gameType.core:
@@ -128,6 +128,15 @@ export class AppComponent implements AfterViewInit, OnInit {
               redPlayerData.agent = agent;
             }
           }
+
+          for (const player of blueTeam) {
+            // fetch 3 previous ranks
+            await this.RSOService.getPlayerHistory(player);
+          }
+          for (const player of redTeam) {
+            // fetch 3 previous ranks
+            await this.RSOService.getPlayerHistory(player);
+          }
           this.defPlayerList = blueTeam;
           this.atkPlayerList = redTeam;
         }
@@ -166,6 +175,8 @@ export class AppComponent implements AfterViewInit, OnInit {
               defPlayerData.partyUUID = presence.partyId;
             }
           }
+
+          await this.RSOService.getPlayerHistory(defPlayerData);
         }
         for (let atkPlayerData of this.atkPlayerList) {
           if (atkPlayerData.PUUID) {
@@ -186,6 +197,8 @@ export class AppComponent implements AfterViewInit, OnInit {
               atkPlayerData.partyUUID = presence.partyId;
             }
           }
+
+          await this.RSOService.getPlayerHistory(atkPlayerData);
         }
 
         break;

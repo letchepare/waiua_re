@@ -42,29 +42,23 @@
     <div class="past-ranks">
       <div class="rank-1-image">
         <img
-          srcset="
-            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
-          "
-          alt="Gold 3"
-          title="Gold 3"
+          [srcset]="playerData.previousRanks.get(0)!.smallIcon! + ' 2x'"
+          [alt]="playerData.previousRanks.get(0)!.tierName"
+          [title]="playerData.previousRanks.get(0)!.tierName"
         />
       </div>
       <div class="rank-2-image">
         <img
-          srcset="
-            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
-          "
-          alt="Gold 3"
-          title="Gold 3"
+          [srcset]="playerData.previousRanks.get(1)!.smallIcon! + ' 2x'"
+          [alt]="playerData.previousRanks.get(1)!.tierName"
+          [title]="playerData.previousRanks.get(1)!.tierName"
         />
       </div>
       <div class="rank-3-image">
         <img
-          srcset="
-            https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/14/smallicon.png 2x
-          "
-          alt="Gold 3"
-          title="Gold 3"
+          [srcset]="playerData.previousRanks.get(2)!.smallIcon! + ' 2x'"
+          [alt]="playerData.previousRanks.get(2)!.tierName"
+          [title]="playerData.previousRanks.get(2)!.tierName"
         />
       </div>
     </div>
