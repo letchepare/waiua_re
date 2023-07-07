@@ -548,6 +548,12 @@ export class RSOServiceService {
     const playerMMRResponse: PlayerMMRResponse = JSON.parse(response);
 
     const compData = playerMMRResponse.QueueSkills.competitive;
+    if (!compData || !compData.SeasonalInfoBySeasonID) {
+      player.previousRanks.set(0, PlayerData.unratedTierInformation());
+      player.previousRanks.set(1, PlayerData.unratedTierInformation());
+      player.previousRanks.set(2, PlayerData.unratedTierInformation());
+      return false;
+    }
 
     const firstPreviousSeasonCompetitiveTier =
       compData.SeasonalInfoBySeasonID[
