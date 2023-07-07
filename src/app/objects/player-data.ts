@@ -19,6 +19,8 @@ export class PlayerData {
   partyColour: string;
   partyUUID: string;
   rank: TierInformation = PlayerData.unratedTierInformation();
+  // Map of previous ranks where 0 will be closer to present and 2 will be closer to past
+  previousRanks: Map<number, TierInformation>;
   /** Player UUID */
   PUUID: string | undefined;
   skins: Map<string, Skin>; // weapon name / skin infos
@@ -39,6 +41,7 @@ export class PlayerData {
     this.agent = obj.agent || undefined;
     this.accountLevel = obj.accountLevel || 0;
     this.partyUUID = obj.partyUUID || "";
+    this.previousRanks = obj.previousRanks || this.defaultPreviousRanks();
   }
   public setName(name: string): void {
     this.name = name;
@@ -65,5 +68,12 @@ export class PlayerData {
       rankTriangleDownIcon: "",
       rankTriangleUpIcon: "",
     };
+  }
+  defaultPreviousRanks(): Map<number, TierInformation> {
+    const previousRanks: Map<number, TierInformation> = new Map();
+    for (let i = 0; i < 3; i++) {
+      previousRanks.set(i, PlayerData.unratedTierInformation());
+    }
+    return previousRanks;
   }
 }

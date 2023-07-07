@@ -34,6 +34,7 @@ import {
   PresencePrivate,
   PresencesResponse,
 } from "../objects/api-objects/presence-response";
+import { SeasonName } from "../helpers/season-name.enum";
 
 @Injectable({
   providedIn: "root",
@@ -50,8 +51,9 @@ export class RSOServiceService {
   private partyUUID: string | undefined;
   private pregameId: string | undefined;
   private coreGameId: string | undefined;
-  private actId: string | undefined;
   private episodeId: string | undefined;
+  // Information about current and past seasons
+  private seasonData: Map<SeasonName, string> = new Map();
 
   constructor() {}
 
@@ -75,7 +77,7 @@ export class RSOServiceService {
     return accessToken.token;
   }
 
-  public async currentSeasonId(): Promise<void> {
+  public async getSeasonIds(): Promise<void> {
     if (!this.version) {
       this.version = await this.getCurrentVersionFromValApi();
     }
@@ -91,14 +93,36 @@ export class RSOServiceService {
       headers,
     });
     const fetchContentResponse: FetchContentResponse = JSON.parse(response);
-    const currentAct = fetchContentResponse.Seasons.find((season) => {
-      return season.IsActive && season.Type === "act";
+    let currentActIndex = 0;
+    const currentAct = fetchContentResponse.Seasons.find((season, index) => {
+      if (!season.IsActive || season.Type !== "act") return false;
+      currentActIndex = index - 1;
+      return season;
     });
+    let previousRankIndex = 0;
+    while (currentActIndex >= 0 && previousRankIndex < 3) {
+      const season = fetchContentResponse.Seasons[currentActIndex];
+      currentActIndex--;
+      if (season.Type === "act") {
+        switch (previousRankIndex) {
+          case 0:
+            this.seasonData.set(SeasonName.thirdPreviousSeason, season.ID);
+            break;
+          case 1:
+            this.seasonData.set(SeasonName.secondPreviousSeason, season.ID);
+            break;
+          case 2:
+            this.seasonData.set(SeasonName.firstPreviousSeason, season.ID);
+            break;
+        }
+        previousRankIndex++;
+      }
+    }
     const currentEpisode = fetchContentResponse.Seasons.find((season) => {
       return season.IsActive && season.Type === "episode";
     });
     if (currentAct && currentAct.ID) {
-      this.actId = currentAct.ID;
+      this.seasonData.set(SeasonName.currentSeason, currentAct.ID);
     }
     if (currentEpisode && currentEpisode.ID) {
       this.episodeId = currentEpisode.ID;
@@ -306,7 +330,8 @@ export class RSOServiceService {
     puuid: string,
     seasonId: string
   ): Promise<number | false> {
-    if (!this.actId || !this.version) return false;
+    if (!this.seasonData.get(SeasonName.currentSeason) || !this.version)
+      return false;
     let headers = new Map<string, string>();
     headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
     headers.set(
@@ -342,10 +367,11 @@ export class RSOServiceService {
    * @returns current rank number in valorant api of false if not found or error
    */
   public async getCurrentRankByPuuid(puuid: string): Promise<number | false> {
-    if (this.actId === undefined) {
+    const currentSeason = this.seasonData.get(SeasonName.currentSeason);
+    if (currentSeason === undefined) {
       return false;
     }
-    return this.getRankByPuuidAndSeasonId(puuid, this.actId);
+    return this.getRankByPuuidAndSeasonId(puuid, currentSeason);
   }
   public async getCoreGamePlayerDatas(): Promise<
     | {
@@ -434,7 +460,6 @@ export class RSOServiceService {
   }
 
   public async getRankInformations(rank: number): Promise<TierInformation> {
-    // throw new Error("Method not implemented.");
     const url = "https://valorant-api.com/v1/competitivetiers";
     const response = await invoke<string>("http_get", {
       url,
@@ -488,5 +513,61 @@ export class RSOServiceService {
       return false;
     }
     // throw new Error("Method not implemented.");
+  }
+
+  public getSeasonMap(): Map<SeasonName, string> {
+    return this.seasonData;
+  }
+
+  async getPlayerHistory(player: PlayerData): Promise<any> {
+    if (!this.version) {
+      this.version = await this.getCurrentVersionFromValApi();
+    }
+    const url = `https://pd.${this.shard}.a.pvp.net/mmr/v1/players/${player.PUUID}`;
+    const playerRankInfo: Map<string, TierInformation> = new Map();
+    // get MMR infos
+    let headers = new Map<string, string>();
+    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    headers.set(
+      CustomHeaderNames.RiotClientPlatform,
+      CustomHeaderValues.RiotClientPlatform
+    );
+    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    const response = await invoke<string>("http_get_bearer_auth", {
+      url: url,
+      bearer: this.accessToken,
+      headers,
+    }).catch((e) => {
+      console.error(e);
+      throw e;
+    });
+    const playerMMRResponse: PlayerMMRResponse = JSON.parse(response);
+
+    const compData = playerMMRResponse.QueueSkills.competitive;
+
+    const firstPreviousSeasonCompetitiveTier =
+      compData.SeasonalInfoBySeasonID[
+        this.seasonData.get(SeasonName.firstPreviousSeason)!
+      ].CompetitiveTier;
+    const secondPreviousSeasonCompetitiveTier =
+      compData.SeasonalInfoBySeasonID[
+        this.seasonData.get(SeasonName.secondPreviousSeason)!
+      ].CompetitiveTier;
+    const thirdPreviousSeasonCompetitiveTier =
+      compData.SeasonalInfoBySeasonID[
+        this.seasonData.get(SeasonName.thirdPreviousSeason)!
+      ].CompetitiveTier;
+    const firstPreviousSeasonTierInformation = await this.getRankInformations(
+      firstPreviousSeasonCompetitiveTier
+    );
+    const secondPreviousSeasonTierInformation = await this.getRankInformations(
+      secondPreviousSeasonCompetitiveTier
+    );
+    const thirdPreviousSeasonTierInformation = await this.getRankInformations(
+      thirdPreviousSeasonCompetitiveTier
+    );
+    player.previousRanks.set(0, firstPreviousSeasonTierInformation);
+    player.previousRanks.set(1, secondPreviousSeasonTierInformation);
+    player.previousRanks.set(2, thirdPreviousSeasonTierInformation);
   }
 }
