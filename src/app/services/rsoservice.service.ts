@@ -190,8 +190,9 @@ export class RSOServiceService {
       return item.productId === "valorant";
     });
     valorantSession;
-    const region =
-      valorantSession?.launchConfiguration.arguments[4].split("=")[1];
+    const region = valorantSession?.launchConfiguration.arguments[4].split(
+      "="
+    )[1];
     switch (region) {
       case "latam":
         (this.region = "na"), (this.shard = "latam");
@@ -389,8 +390,9 @@ export class RSOServiceService {
         bearer: this.accessToken,
         headers,
       });
-      const currentGameMatchResponse: CurrentGameMatchResponse =
-        JSON.parse(response);
+      const currentGameMatchResponse: CurrentGameMatchResponse = JSON.parse(
+        response
+      );
       let blueTeam = currentGameMatchResponse.Players.filter(
         (player) => player.TeamID === PreGameMatchTeamIds.defender
       );
@@ -464,8 +466,9 @@ export class RSOServiceService {
     const response = await invoke<string>("http_get", {
       url,
     });
-    const competitiveTiers: ValApiCompetitiveTierResponse =
-      JSON.parse(response);
+    const competitiveTiers: ValApiCompetitiveTierResponse = JSON.parse(
+      response
+    );
     const competitiveTiersLastIndex = competitiveTiers.data.length - 1;
     const tier = competitiveTiers.data[competitiveTiersLastIndex];
     const tierRank = tier.tiers.find((tier) => tier.tier === rank);
@@ -541,6 +544,7 @@ export class RSOServiceService {
       console.error(e);
       throw e;
     });
+    if (!response) return false;
     const playerMMRResponse: PlayerMMRResponse = JSON.parse(response);
 
     const compData = playerMMRResponse.QueueSkills.competitive;
@@ -548,15 +552,16 @@ export class RSOServiceService {
     const firstPreviousSeasonCompetitiveTier =
       compData.SeasonalInfoBySeasonID[
         this.seasonData.get(SeasonName.firstPreviousSeason)!
-      ].CompetitiveTier;
+      ]?.CompetitiveTier || 0;
     const secondPreviousSeasonCompetitiveTier =
       compData.SeasonalInfoBySeasonID[
         this.seasonData.get(SeasonName.secondPreviousSeason)!
-      ].CompetitiveTier;
+      ]?.CompetitiveTier || 0;
     const thirdPreviousSeasonCompetitiveTier =
       compData.SeasonalInfoBySeasonID[
         this.seasonData.get(SeasonName.thirdPreviousSeason)!
-      ].CompetitiveTier;
+      ]?.CompetitiveTier || 0;
+
     const firstPreviousSeasonTierInformation = await this.getRankInformations(
       firstPreviousSeasonCompetitiveTier
     );

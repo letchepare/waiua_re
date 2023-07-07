@@ -1,14 +1,14 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{collections::HashMap, fs};
-
 use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
 use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client,
 };
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
+use std::{collections::HashMap, fs};
+use tauri::Manager;
 
 fn build_reqwest_client() -> ClientWithMiddleware {
     let reqwest_client = Client::builder()
