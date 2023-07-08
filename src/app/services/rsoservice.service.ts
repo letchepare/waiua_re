@@ -35,6 +35,10 @@ import {
   PresencesResponse,
 } from "../objects/api-objects/presence-response";
 import { SeasonName } from "../helpers/season-name.enum";
+import {
+  CompetitiveUpdatesResponse,
+  MatchUpdate,
+} from "../objects/api-objects/val-api-competitive-updates-response";
 
 @Injectable({
   providedIn: "root",
@@ -515,7 +519,6 @@ export class RSOServiceService {
       console.error(e);
       return false;
     }
-    // throw new Error("Method not implemented.");
   }
 
   public getSeasonMap(): Map<SeasonName, string> {
@@ -580,5 +583,43 @@ export class RSOServiceService {
     player.previousRanks.set(0, firstPreviousSeasonTierInformation);
     player.previousRanks.set(1, secondPreviousSeasonTierInformation);
     player.previousRanks.set(2, thirdPreviousSeasonTierInformation);
+  }
+
+  async getMatchHistory(player: PlayerData): Promise<void> {
+    if (!this.version) {
+      this.version = await this.getCurrentVersionFromValApi();
+    }
+    const url = `https://pd.${this.region}.a.pvp.net/mmr/v1/players/${player.PUUID}/competitiveupdates?queue=competitive`;
+    let headers = new Map<string, string>();
+    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    headers.set(
+      CustomHeaderNames.RiotClientPlatform,
+      CustomHeaderValues.RiotClientPlatform
+    );
+    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    const response = await invoke<string>("http_get_bearer_auth", {
+      url: url,
+      bearer: this.accessToken,
+      headers,
+    });
+    const competitiveUpdatesResponse: CompetitiveUpdatesResponse = JSON.parse(
+      response
+    );
+    const matches: MatchUpdate[] = competitiveUpdatesResponse.Matches;
+    if (matches.length > 2) {
+      player.matchHistory.set(2, matches[2]);
+      player.matchHistory.set(1, matches[1]);
+      player.matchHistory.set(0, matches[0]);
+    }
+    if (matches.length === 2) {
+      player.matchHistory.set(1, matches[1]);
+      player.matchHistory.set(0, matches[0]);
+    }
+    if (matches.length === 1) {
+      player.matchHistory.set(0, matches[0]);
+    }
+    if (matches.length === 0) {
+      player.matchHistory = player.defaultMatchHistory();
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import {
   faArrowsRotate,
   faCog,
@@ -9,7 +9,7 @@ import { http } from "@tauri-apps/api";
 import { PlayerData, PlayerDataDefaultValues } from "./objects/player-data";
 import { RSOServiceService } from "./services/rsoservice.service";
 import { gameType } from "./objects/api-objects/game-type.enum";
-import { PresencePrivate } from "./objects/api-objects/presence-response";
+import { SwalComponent } from "@sweetalert2/ngx-sweetalert2/public-api";
 
 @Component({
   selector: "app-root",
@@ -17,6 +17,9 @@ import { PresencePrivate } from "./objects/api-objects/presence-response";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements AfterViewInit, OnInit {
+  @ViewChild("loadingData")
+  public readonly loadingData!: SwalComponent;
+
   faCog = faCog;
   faInfo = faInfo;
   faRefresh = faArrowsRotate;
@@ -54,161 +57,176 @@ export class AppComponent implements AfterViewInit, OnInit {
     else this.createUpdateTimer();
   }
   async updateChecks(): Promise<false | void> {
+    // open loading overlay
+    this.loadingData.fire();
     if (!(await this.RSOService.checkLockfile())) {
       return false;
     }
-    await this.RSOService.localLogin();
-    await this.RSOService.localRegion();
-    await this.RSOService.getSeasonIds();
-    let matchStatus = await this.RSOService.checkMatch();
-    switch (matchStatus) {
-      case gameType.core:
-        const coreGamePlayerDatas =
-          await this.RSOService.getCoreGamePlayerDatas();
-        if (coreGamePlayerDatas !== false) {
-          const redTeam =
-            coreGamePlayerDatas.redTeamPlayerData.length > 0
-              ? coreGamePlayerDatas.redTeamPlayerData
-              : [];
-          const blueTeam =
-            coreGamePlayerDatas.blueTeamPlayerData.length > 0
-              ? coreGamePlayerDatas.blueTeamPlayerData
-              : [];
-          for (let bluePlayerData of blueTeam) {
-            if (bluePlayerData.PUUID) {
-              const rank = await this.RSOService.getCurrentRankByPuuid(
-                bluePlayerData.PUUID
-              );
-              // rank 0 is unrated
-              // rank 1 and 2 are "unused"
-              if (rank && rank > 2) {
-                const rankInformations =
-                  await this.RSOService.getRankInformations(rank);
-                bluePlayerData.rank = rankInformations;
-              }
+    try {
+      await this.RSOService.localLogin();
+      await this.RSOService.localRegion();
+      await this.RSOService.getSeasonIds();
+      let matchStatus = await this.RSOService.checkMatch();
+      switch (matchStatus) {
+        case gameType.core:
+          const coreGamePlayerDatas = await this.RSOService.getCoreGamePlayerDatas();
+          if (coreGamePlayerDatas !== false) {
+            const redTeam =
+              coreGamePlayerDatas.redTeamPlayerData.length > 0
+                ? coreGamePlayerDatas.redTeamPlayerData
+                : [];
+            const blueTeam =
+              coreGamePlayerDatas.blueTeamPlayerData.length > 0
+                ? coreGamePlayerDatas.blueTeamPlayerData
+                : [];
+            for (let bluePlayerData of blueTeam) {
+              if (bluePlayerData.PUUID) {
+                const rank = await this.RSOService.getCurrentRankByPuuid(
+                  bluePlayerData.PUUID
+                );
+                // rank 0 is unrated
+                // rank 1 and 2 are "unused"
+                if (rank && rank > 2) {
+                  const rankInformations = await this.RSOService.getRankInformations(
+                    rank
+                  );
+                  bluePlayerData.rank = rankInformations;
+                }
 
-              const presence = await this.RSOService.getPresences(
-                bluePlayerData.PUUID
-              );
-              if (presence) {
-                bluePlayerData.partyUUID = presence.partyId;
+                const presence = await this.RSOService.getPresences(
+                  bluePlayerData.PUUID
+                );
+                if (presence) {
+                  bluePlayerData.partyUUID = presence.partyId;
+                }
+              }
+              if (bluePlayerData.agent?.uuid) {
+                const agent = await this.RSOService.getAgent(
+                  bluePlayerData.agent.uuid
+                );
+                bluePlayerData.agent = agent;
               }
             }
-            if (bluePlayerData.agent?.uuid) {
-              const agent = await this.RSOService.getAgent(
-                bluePlayerData.agent.uuid
-              );
-              bluePlayerData.agent = agent;
-            }
-          }
-          for (let redPlayerData of redTeam) {
-            if (redPlayerData.PUUID) {
-              const rank = await this.RSOService.getCurrentRankByPuuid(
-                redPlayerData.PUUID
-              );
-              // rank 0 is unrated
-              // rank 1 and 2 are "unused"
-              if (rank && rank > 2) {
-                const rankInformations =
-                  await this.RSOService.getRankInformations(rank);
-                redPlayerData.rank = rankInformations;
-              }
+            for (let redPlayerData of redTeam) {
+              if (redPlayerData.PUUID) {
+                const rank = await this.RSOService.getCurrentRankByPuuid(
+                  redPlayerData.PUUID
+                );
+                // rank 0 is unrated
+                // rank 1 and 2 are "unused"
+                if (rank && rank > 2) {
+                  const rankInformations = await this.RSOService.getRankInformations(
+                    rank
+                  );
+                  redPlayerData.rank = rankInformations;
+                }
 
-              const presence = await this.RSOService.getPresences(
-                redPlayerData.PUUID
-              );
-              if (presence) {
-                redPlayerData.partyUUID = presence.partyId;
+                const presence = await this.RSOService.getPresences(
+                  redPlayerData.PUUID
+                );
+                if (presence) {
+                  redPlayerData.partyUUID = presence.partyId;
+                }
+              }
+              if (redPlayerData.agent?.uuid) {
+                const agent = await this.RSOService.getAgent(
+                  redPlayerData.agent.uuid
+                );
+                redPlayerData.agent = agent;
               }
             }
-            if (redPlayerData.agent?.uuid) {
-              const agent = await this.RSOService.getAgent(
-                redPlayerData.agent.uuid
-              );
-              redPlayerData.agent = agent;
-            }
-          }
 
-          for (const player of blueTeam) {
-            // fetch 3 previous ranks
-            await this.RSOService.getPlayerHistory(player);
+            for (const player of blueTeam) {
+              // fetch 3 previous ranks
+              await this.RSOService.getPlayerHistory(player);
+              await this.RSOService.getMatchHistory(player);
+            }
+            for (const player of redTeam) {
+              // fetch 3 previous ranks
+              await this.RSOService.getPlayerHistory(player);
+              await this.RSOService.getMatchHistory(player);
+            }
+            this.defPlayerList = blueTeam;
+            this.atkPlayerList = redTeam;
           }
-          for (const player of redTeam) {
-            // fetch 3 previous ranks
-            await this.RSOService.getPlayerHistory(player);
-          }
-          this.defPlayerList = blueTeam;
-          this.atkPlayerList = redTeam;
-        }
-        break;
-      case gameType.pregame:
-        const preGamePlayerDatas = await this.RSOService.getPregameInfos();
-        if (!preGamePlayerDatas) {
           break;
-        }
-        this.defPlayerList =
-          preGamePlayerDatas.blueTeamPlayerData.length > 0
-            ? preGamePlayerDatas.blueTeamPlayerData
-            : [];
+        case gameType.pregame:
+          const preGamePlayerDatas = await this.RSOService.getPregameInfos();
+          if (!preGamePlayerDatas) {
+            break;
+          }
+          this.defPlayerList =
+            preGamePlayerDatas.blueTeamPlayerData.length > 0
+              ? preGamePlayerDatas.blueTeamPlayerData
+              : [];
 
-        this.atkPlayerList =
-          preGamePlayerDatas.redTeamPlayerData.length > 0
-            ? preGamePlayerDatas.redTeamPlayerData
-            : [];
+          this.atkPlayerList =
+            preGamePlayerDatas.redTeamPlayerData.length > 0
+              ? preGamePlayerDatas.redTeamPlayerData
+              : [];
 
-        for (let defPlayerData of this.defPlayerList) {
-          if (defPlayerData.PUUID) {
-            const rank = await this.RSOService.getCurrentRankByPuuid(
-              defPlayerData.PUUID
-            );
-            // rank 0 is unrated
-            // rank 1 and 2 are "unused"
-            if (rank && rank > 2) {
-              const rankInformations =
-                await this.RSOService.getRankInformations(rank);
-              defPlayerData.rank = rankInformations;
+          for (let defPlayerData of this.defPlayerList) {
+            if (defPlayerData.PUUID) {
+              const rank = await this.RSOService.getCurrentRankByPuuid(
+                defPlayerData.PUUID
+              );
+              // rank 0 is unrated
+              // rank 1 and 2 are "unused"
+              if (rank && rank > 2) {
+                const rankInformations = await this.RSOService.getRankInformations(
+                  rank
+                );
+                defPlayerData.rank = rankInformations;
+              }
+              const presence = await this.RSOService.getPresences(
+                defPlayerData.PUUID
+              );
+              if (presence) {
+                defPlayerData.partyUUID = presence.partyId;
+              }
             }
-            const presence = await this.RSOService.getPresences(
-              defPlayerData.PUUID
-            );
-            if (presence) {
-              defPlayerData.partyUUID = presence.partyId;
+
+            await this.RSOService.getPlayerHistory(defPlayerData);
+            await this.RSOService.getMatchHistory(defPlayerData);
+          }
+          for (let atkPlayerData of this.atkPlayerList) {
+            if (atkPlayerData.PUUID) {
+              const rank = await this.RSOService.getCurrentRankByPuuid(
+                atkPlayerData.PUUID
+              );
+              // rank 0 is unrated
+              // rank 1 and 2 are "unused"
+              if (rank && rank > 2) {
+                const rankInformations = await this.RSOService.getRankInformations(
+                  rank
+                );
+                atkPlayerData.rank = rankInformations;
+              }
+              const presence = await this.RSOService.getPresences(
+                atkPlayerData.PUUID
+              );
+              if (presence) {
+                atkPlayerData.partyUUID = presence.partyId;
+              }
             }
+
+            await this.RSOService.getPlayerHistory(atkPlayerData);
+            await this.RSOService.getMatchHistory(atkPlayerData);
           }
 
-          await this.RSOService.getPlayerHistory(defPlayerData);
-        }
-        for (let atkPlayerData of this.atkPlayerList) {
-          if (atkPlayerData.PUUID) {
-            const rank = await this.RSOService.getCurrentRankByPuuid(
-              atkPlayerData.PUUID
-            );
-            // rank 0 is unrated
-            // rank 1 and 2 are "unused"
-            if (rank && rank > 2) {
-              const rankInformations =
-                await this.RSOService.getRankInformations(rank);
-              atkPlayerData.rank = rankInformations;
-            }
-            const presence = await this.RSOService.getPresences(
-              atkPlayerData.PUUID
-            );
-            if (presence) {
-              atkPlayerData.partyUUID = presence.partyId;
-            }
-          }
+          break;
+        default:
+          return false;
+      }
 
-          await this.RSOService.getPlayerHistory(atkPlayerData);
-        }
-
-        break;
-      default:
-        return false;
+      // set party colors by party ids
+      this.setPartyIds();
+      // close loading overlay
+      this.loadingData.close();
+    } catch (e) {
+      console.log(e);
+      this.loadingData.close();
     }
-
-    // set party colors by party ids
-    this.setPartyIds();
-    // clearInterval(this.refreshInfosTimer);
   }
   setPartyIds() {
     let colors = [
