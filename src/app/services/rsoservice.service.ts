@@ -607,13 +607,13 @@ export class RSOServiceService {
     );
     const matches: MatchUpdate[] = competitiveUpdatesResponse.Matches;
     if (matches.length > 2) {
-      player.matchHistory.set(2, matches[2]);
+      player.matchHistory.set(2, matches[0]);
       player.matchHistory.set(1, matches[1]);
-      player.matchHistory.set(0, matches[0]);
+      player.matchHistory.set(0, matches[2]);
     }
     if (matches.length === 2) {
-      player.matchHistory.set(1, matches[1]);
-      player.matchHistory.set(0, matches[0]);
+      player.matchHistory.set(1, matches[0]);
+      player.matchHistory.set(0, matches[1]);
     }
     if (matches.length === 1) {
       player.matchHistory.set(0, matches[0]);
