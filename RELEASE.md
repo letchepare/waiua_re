@@ -1,9 +1,10 @@
-# Version 0.0.4
+# Version 0.0.6
 
 ## This version contains the following new functionnalities:
 
-- No new feature in this release
+- Last 3 competitive matches RR badges
+- Current RR shown under curent rank icon
 
 ## This version contains the following bug fixes:
 
-- Fixed a bug where the app would not do anything if one player was unrated in the last 3 acts
+- no bug fixed in this version
