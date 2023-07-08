@@ -2,6 +2,7 @@ import { Skin } from "./skin";
 import { SkinUtils } from "../helpers/skin-utils";
 import { TierInformation } from "./api-objects/val-api-competitive-tier-response";
 import { AgentData } from "./agent-data";
+import { MatchUpdate } from "./api-objects/val-api-competitive-updates-response";
 export enum PlayerDataDefaultValues {
   image = "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/smallart.png",
   name = "----",
@@ -26,6 +27,7 @@ export class PlayerData {
   skins: Map<string, Skin>; // weapon name / skin infos
   agent?: AgentData;
   accountLevel: number;
+  matchHistory: Map<number, MatchUpdate>;
 
   constructor(obj: Partial<PlayerData>) {
     Object.assign(this, obj);
@@ -42,6 +44,7 @@ export class PlayerData {
     this.accountLevel = obj.accountLevel || 0;
     this.partyUUID = obj.partyUUID || "";
     this.previousRanks = obj.previousRanks || this.defaultPreviousRanks();
+    this.matchHistory = obj.matchHistory || this.defaultMatchHistory();
   }
   public setName(name: string): void {
     this.name = name;
@@ -75,5 +78,33 @@ export class PlayerData {
       previousRanks.set(i, PlayerData.unratedTierInformation());
     }
     return previousRanks;
+  }
+
+  defaultMatchHistory(): Map<number, MatchUpdate> {
+    const result = new Map<number, MatchUpdate>();
+
+    const matchUpdate: MatchUpdate = {
+      /** Match ID */
+      MatchID: "",
+      /** Map ID */
+      MapID: "",
+      /** Season ID */
+      SeasonID: "",
+      /** Milliseconds since epoch */
+      MatchStartTime: 0,
+      TierAfterUpdate: 0,
+      TierBeforeUpdate: 0,
+      RankedRatingAfterUpdate: 0,
+      RankedRatingBeforeUpdate: 0,
+      RankedRatingEarned: 0,
+      RankedRatingPerformanceBonus: 0,
+      CompetitiveMovement: "MOVEMENT_UNKNOWN",
+      AFKPenalty: 0,
+    };
+    for (let i = 0; i < 3; i++) {
+      result.set(i, matchUpdate);
+    }
+
+    return result;
   }
 }

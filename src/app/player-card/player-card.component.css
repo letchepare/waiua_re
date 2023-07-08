@@ -180,8 +180,23 @@
 .game-1-rr,
 .game-2-rr,
 .game-3-rr {
-  display: flex;
-  align-items: top;
+  height: fit-content;
+  border-radius: 45%;
+  text-align: center;
+  padding: 8%;
+
+  &.win {
+    background-color: #32e2b2;
+    color: black;
+  }
+  &.lose {
+    background-color: #ff4654;
+    color: black;
+  }
+  &.default {
+    background-color: #7f7f7f;
+    color: black;
+  }
 }
 .group-icon {
   position: absolute;
