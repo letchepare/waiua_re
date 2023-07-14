@@ -27,7 +27,7 @@ export interface CurrentGameMatchResponse {
   Players: {
     /** Player UUID */
     Subject: string;
-    TeamID: ("Blue" | "Red") | string;
+    TeamID: "Blue" | "Red";
     /** Character ID */
     CharacterID: string;
     PlayerIdentity: {

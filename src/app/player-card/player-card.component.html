@@ -16,18 +16,18 @@
     <div class="player-skins">
       <div class="vandal-skin">
         <img
-          [src]="playerData.skins.get(weaponNames.vandal)!.image"
-          [alt]="playerData.skins.get(weaponNames.vandal)!.name"
-          (click)="clickedSkin(playerData.skins.get(weaponNames.vandal)!.name)"
-          [title]="playerData.skins.get(weaponNames.vandal)!.name"
+          [src]="playerData.skins.get(WeaponIds.vandal)!.image"
+          [alt]="playerData.skins.get(WeaponIds.vandal)!.name"
+          (click)="clickedSkin(playerData.skins.get(WeaponIds.vandal)!.name)"
+          [title]="playerData.skins.get(WeaponIds.vandal)!.name"
         />
       </div>
       <div class="phantom-skin">
         <img
-          [src]="playerData.skins.get(weaponNames.phantom)!.image"
-          [alt]="playerData.skins.get(weaponNames.vandal)!.name"
-          (click)="clickedSkin(playerData.skins.get(weaponNames.vandal)!.name)"
-          [title]="playerData.skins.get(weaponNames.vandal)!.name"
+          [src]="playerData.skins.get(WeaponIds.phantom)!.image"
+          [alt]="playerData.skins.get(WeaponIds.vandal)!.name"
+          (click)="clickedSkin(playerData.skins.get(WeaponIds.vandal)!.name)"
+          [title]="playerData.skins.get(WeaponIds.vandal)!.name"
         />
       </div>
     </div>
@@ -48,9 +48,9 @@
       <div
         class="game-2-rr"
         [ngClass]="{
-          win: playerData.matchHistory.get(0)!.RankedRatingEarned > 0,
-          lose: playerData.matchHistory.get(0)!.RankedRatingEarned < 0,
-          default: playerData.matchHistory.get(0)!.RankedRatingEarned === 0
+          win: playerData.matchHistory.get(1)!.RankedRatingEarned > 0,
+          lose: playerData.matchHistory.get(1)!.RankedRatingEarned < 0,
+          default: playerData.matchHistory.get(1)!.RankedRatingEarned === 0
         }"
       >
         {{ playerData.matchHistory.get(1)!.RankedRatingEarned }}
@@ -58,9 +58,9 @@
       <div
         class="game-3-rr"
         [ngClass]="{
-          win: playerData.matchHistory.get(0)!.RankedRatingEarned > 0,
-          lose: playerData.matchHistory.get(0)!.RankedRatingEarned < 0,
-          default: playerData.matchHistory.get(0)!.RankedRatingEarned === 0
+          win: playerData.matchHistory.get(2)!.RankedRatingEarned > 0,
+          lose: playerData.matchHistory.get(2)!.RankedRatingEarned < 0,
+          default: playerData.matchHistory.get(2)!.RankedRatingEarned === 0
         }"
       >
         {{ playerData.matchHistory.get(2)!.RankedRatingEarned }}
@@ -101,8 +101,8 @@
     <div class="current-rank-rr">
       <progress
         max="100"
-        [value]="playerData.matchHistory.get(0)!.RankedRatingAfterUpdate"
-        [title]="playerData.matchHistory.get(0)!.RankedRatingAfterUpdate"
+        [value]="playerData.matchHistory.get(2)!.RankedRatingAfterUpdate"
+        [title]="playerData.matchHistory.get(2)!.RankedRatingAfterUpdate"
       ></progress>
     </div>
   </div>

@@ -39,6 +39,16 @@ import {
   CompetitiveUpdatesResponse,
   MatchUpdate,
 } from "../objects/api-objects/val-api-competitive-updates-response";
+import {
+  CurrentGameLoadoutsResponse,
+  Loadout,
+} from "../objects/api-objects/val-api-current-game-loadouts-response";
+import {
+  WeaponIds,
+  weaponDefaultSkinUUIDs,
+} from "../helpers/weapon-default-skin-infos.enum";
+import { SkinChromasResponse } from "../objects/api-objects/val-api-skin-chromas-response";
+import { Skin } from "../objects/skin";
 
 @Injectable({
   providedIn: "root",
@@ -165,8 +175,7 @@ export class RSOServiceService {
     `logged as ${this.PUUID}`;
   }
 
-  // Should return void, but any set for interruption return
-  public async localRegion(): Promise<any> {
+  public async localRegion(): Promise<void> {
     if (!this.version) {
       this.version = await this.getCurrentVersionFromValApi();
     }
@@ -397,48 +406,39 @@ export class RSOServiceService {
       const currentGameMatchResponse: CurrentGameMatchResponse = JSON.parse(
         response
       );
-      let blueTeam = currentGameMatchResponse.Players.filter(
-        (player) => player.TeamID === PreGameMatchTeamIds.defender
+      const players: PlayerData[] = currentGameMatchResponse.Players.map(
+        (player) => {
+          const puuid = player.Subject;
+          return new PlayerData({
+            PUUID: puuid,
+            image: player.PlayerIdentity.PlayerCardID,
+            partyUUID: this.partyUUID,
+            agent: { uuid: player.CharacterID },
+            accountLevel: player.PlayerIdentity.AccountLevel,
+            teamId: player.TeamID,
+          });
+        }
       );
-      let redTeam = currentGameMatchResponse.Players.filter(
-        (player) => player.TeamID === PreGameMatchTeamIds.attacker
+      await this.setSkins(players);
+      let blueTeamPlayerData = players.filter(
+        (player) => player.teamId === PreGameMatchTeamIds.defender
       );
-      const blueteamUUIDs = blueTeam.map((player) => player.Subject);
+      let redTeamPlayerData = players.filter(
+        (player) => player.teamId === PreGameMatchTeamIds.attacker
+      );
+      const blueteamUUIDs = blueTeamPlayerData.map((player) => player.PUUID!);
       const blueTeamNames = await this.getUserNamesByPUUIDs(blueteamUUIDs);
       const blueTeamNamesMap = new Map<string, string>();
       blueTeamNames.forEach((name) =>
         blueTeamNamesMap.set(name.Subject, name.GameName + "#" + name.TagLine)
       );
-      const blueTeamPlayerData: PlayerData[] = blueTeam.map((player) => {
-        const puuid = player.Subject;
-        const name = blueTeamNamesMap.get(puuid) || "----";
-        return new PlayerData({
-          PUUID: puuid,
-          image: player.PlayerIdentity.PlayerCardID,
-          partyUUID: this.partyUUID,
-          name: name,
-          agent: { uuid: player.CharacterID },
-          accountLevel: player.PlayerIdentity.AccountLevel,
-        });
-      });
-      const redTeamUUIDs = redTeam.map((player) => player.Subject);
+
+      const redTeamUUIDs = redTeamPlayerData.map((player) => player.PUUID!);
       const redTeamNames = await this.getUserNamesByPUUIDs(redTeamUUIDs);
       const redTeamNamesMap = new Map<string, string>();
       redTeamNames.forEach((name) =>
         redTeamNamesMap.set(name.Subject, name.GameName + "#" + name.TagLine)
       );
-      const redTeamPlayerData: PlayerData[] = redTeam.map((player) => {
-        const puuid = player.Subject;
-        const name = redTeamNamesMap.get(puuid) || "----";
-        return new PlayerData({
-          PUUID: puuid,
-          image: player.PlayerIdentity.PlayerCardID,
-          partyUUID: this.partyUUID,
-          name: name,
-          agent: { uuid: player.CharacterID },
-          accountLevel: player.PlayerIdentity.AccountLevel,
-        });
-      });
       return { redTeamPlayerData, blueTeamPlayerData };
     } catch (e) {
       throw e;
@@ -511,10 +511,13 @@ export class RSOServiceService {
       if (!userPresence) {
         return false;
       }
-      const privateData: PresencePrivate = JSON.parse(
-        atob(userPresence.private)
-      );
-      return privateData;
+      if (userPresence.private) {
+        const privateData: PresencePrivate = JSON.parse(
+          atob(userPresence.private)
+        );
+        return privateData;
+      }
+      return false;
     } catch (e) {
       console.error(e);
       return false;
@@ -620,6 +623,54 @@ export class RSOServiceService {
     }
     if (matches.length === 0) {
       player.matchHistory = player.defaultMatchHistory();
+    }
+  }
+
+  async setSkins(players: PlayerData[]): Promise<void> {
+    if (!this.version) {
+      this.version = await this.getCurrentVersionFromValApi();
+    }
+    const skinSocketId = "3ad1b2b2-acdb-4524-852f-954a76ddae0a";
+    const skinUrlInfos = "https://valorant-api.com/v1/weapons/skinchromas";
+    const url = `https://glz-${this.region}-1.${this.shard}.a.pvp.net/core-game/v1/matches/${this.coreGameId}/loadouts`;
+    let headers = new Map<string, string>();
+    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    headers.set(
+      CustomHeaderNames.RiotClientPlatform,
+      CustomHeaderValues.RiotClientPlatform
+    );
+    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    const response = await invoke<string>("http_get_bearer_auth", {
+      url: url,
+      bearer: this.accessToken,
+      headers,
+    });
+    const currentGameLoadoutsResponse: CurrentGameLoadoutsResponse = JSON.parse(
+      response
+    );
+    let index = 0;
+    for (let item of currentGameLoadoutsResponse.Loadouts) {
+      // find skins infos
+      const weaponIds = Object.values(WeaponIds);
+      for (const weaponId of weaponIds) {
+        const skinId =
+          item.Loadout.Items[weaponId].Sockets[skinSocketId].Item.ID;
+        const response = await invoke<string>("http_get", {
+          url: `${skinUrlInfos}/${skinId}`,
+        });
+
+        const SkinChromasResponse: SkinChromasResponse = JSON.parse(response);
+
+        const skin: Skin = new Skin(
+          SkinChromasResponse.data.uuid,
+          SkinChromasResponse.data.displayName,
+          SkinChromasResponse.data.fullRender
+        );
+        players[index].skins.set(weaponId, skin);
+      }
+
+      // next player
+      index++;
     }
   }
 }
