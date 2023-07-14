@@ -1,10 +1,8 @@
-# Version 0.0.6
+# Version 0.0.7
 
 ## This version contains the following new functionnalities:
 
-- Last 3 competitive matches RR badges
-- Current RR shown under curent rank icon
-
+- Showing vandal and phantom skins, later version is planned to show all skins
 ## This version contains the following bug fixes:
 
-- no bug fixed in this version
+- Fixed previous RR color
