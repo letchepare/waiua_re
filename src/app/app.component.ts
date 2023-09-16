@@ -5,7 +5,6 @@ import {
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { http } from "@tauri-apps/api";
-// import axios from "axios";
 import { PlayerData, PlayerDataDefaultValues } from "./objects/player-data";
 import { RSOServiceService } from "./services/rsoservice.service";
 import { gameType } from "./objects/api-objects/game-type.enum";
@@ -46,7 +45,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       this.defPlayerList.push(new PlayerData({ name: `Player ${i}` }));
     }
 
-    this.createUpdateTimer();
+    // this.createUpdateTimer();
   }
 
   createUpdateTimer() {

@@ -1,26 +1,36 @@
 <div class="header">
   <span class="item">
     <button>
-      <fa-icon [icon]="faCog" size="2x"></fa-icon>
+      <fa-icon [icon]="faCog" size="2x" title="nothing yet"></fa-icon>
     </button>
   </span>
-  <span class="item">Votre Groupe</span>
-  <span class="item">Statut</span>
+  <!-- <span class="item">Votre Groupe</span>
+  <span class="item">Statut</span> -->
+  <span class="item"></span>
+  <span class="item"></span>
   <span class="item end">
     <button (click)="clickedForceRefresh()">
-      <fa-icon [icon]="faRefresh" size="2x"></fa-icon>
+      <fa-icon [icon]="faRefresh" size="2x" title="refresh data"></fa-icon>
     </button>
     <span> &nbsp; </span>
     <button>
-      <fa-icon [icon]="faInfo" size="2x"></fa-icon>
+      <fa-icon [icon]="faInfo" size="2x" title="nothing yet"></fa-icon>
     </button>
   </span>
 </div>
-<swal #loadingData title="Chargement..." text="Chargement des données en cours..." type="info" icon="info" [allowOutsideClick]="false" [showConfirmButton]="false"></swal>
+<swal
+  #loadingData
+  title="Loading..."
+  text="Loading data..."
+  type="info"
+  icon="info"
+  [allowOutsideClick]="false"
+  [showConfirmButton]="false"
+></swal>
 
 <div class="container-teams">
   <div class="team-a">
-    <h3>Attaque</h3>
+    <h3>Attack</h3>
     <div *ngIf="atkPlayerList.length > 0; else noAtkPlayerList">
       <app-player-card
         *ngFor="let playerData of atkPlayerList"
@@ -33,7 +43,7 @@
   </div>
   <hr />
   <div class="team-b">
-    <h3>Défense</h3>
+    <h3>Defense</h3>
     <div *ngIf="defPlayerList.length > 0; else noDefPlayerList">
       <app-player-card
         *ngFor="let playerData of defPlayerList"

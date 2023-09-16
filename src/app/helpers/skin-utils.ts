@@ -1,5 +1,6 @@
 import { Skin } from "../objects/skin";
 import {
+  WeaponIds,
   weaponDefaultSkinImages,
   weaponDefaultSkinUUIDs,
 } from "./weapon-default-skin-infos.enum";
@@ -11,7 +12,7 @@ export class SkinUtils {
 
     // SIDEARMS
     defaultSkins.set(
-      weaponNames.classic,
+      WeaponIds.classic,
       new Skin(
         weaponDefaultSkinUUIDs.classic,
         `Standard ${weaponNames.classic}`,
@@ -19,7 +20,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.shorty,
+      WeaponIds.shorty,
       new Skin(
         weaponDefaultSkinUUIDs.shorty,
         `Standard ${weaponNames.shorty}`,
@@ -27,7 +28,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.frenzy,
+      WeaponIds.frenzy,
       new Skin(
         weaponDefaultSkinUUIDs.frenzy,
         `Standard ${weaponNames.frenzy}`,
@@ -35,7 +36,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.ghost,
+      WeaponIds.ghost,
       new Skin(
         weaponDefaultSkinUUIDs.ghost,
         `Standard ${weaponNames.ghost}`,
@@ -43,7 +44,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.sheriff,
+      WeaponIds.sheriff,
       new Skin(
         weaponDefaultSkinUUIDs.sheriff,
         `Standard ${weaponNames.sheriff}`,
@@ -53,7 +54,7 @@ export class SkinUtils {
 
     // SMGS
     defaultSkins.set(
-      weaponNames.stinger,
+      WeaponIds.stinger,
       new Skin(
         weaponDefaultSkinUUIDs.stinger,
         `Standard ${weaponNames.stinger}`,
@@ -61,7 +62,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.spectre,
+      WeaponIds.spectre,
       new Skin(
         weaponDefaultSkinUUIDs.spectre,
         `Standard ${weaponNames.spectre}`,
@@ -71,7 +72,7 @@ export class SkinUtils {
 
     // SHOTGUNS
     defaultSkins.set(
-      weaponNames.bucky,
+      WeaponIds.bucky,
       new Skin(
         weaponDefaultSkinUUIDs.bucky,
         `Standard ${weaponNames.bucky}`,
@@ -79,7 +80,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.judge,
+      WeaponIds.judge,
       new Skin(
         weaponDefaultSkinUUIDs.judge,
         `Standard ${weaponNames.judge}`,
@@ -88,7 +89,7 @@ export class SkinUtils {
     );
     // RIFLES
     defaultSkins.set(
-      weaponNames.bulldog,
+      WeaponIds.bulldog,
       new Skin(
         weaponDefaultSkinUUIDs.bulldog,
         `Standard ${weaponNames.bulldog}`,
@@ -96,7 +97,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.guardian,
+      WeaponIds.guardian,
       new Skin(
         weaponDefaultSkinUUIDs.guardian,
         `Standard ${weaponNames.guardian}`,
@@ -104,7 +105,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.phantom,
+      WeaponIds.phantom,
       new Skin(
         weaponDefaultSkinUUIDs.phantom,
         `Standard ${weaponNames.phantom}`,
@@ -112,7 +113,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.vandal,
+      WeaponIds.vandal,
       new Skin(
         weaponDefaultSkinUUIDs.vandal,
         `Standard ${weaponNames.vandal}`,
@@ -121,7 +122,7 @@ export class SkinUtils {
     );
     // SNIPERS
     defaultSkins.set(
-      weaponNames.marshal,
+      WeaponIds.marshal,
       new Skin(
         weaponDefaultSkinUUIDs.marshal,
         `Standard ${weaponNames.marshal}`,
@@ -129,7 +130,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      weaponNames.operator,
+      WeaponIds.operator,
       new Skin(
         weaponDefaultSkinUUIDs.operator,
         `Standard ${weaponNames.operator}`,
@@ -139,7 +140,7 @@ export class SkinUtils {
 
     // HEAVY
     defaultSkins.set(
-      "ares",
+      WeaponIds.ares,
       new Skin(
         weaponDefaultSkinUUIDs.ares,
         `Standard ${weaponNames.ares}`,
@@ -147,7 +148,7 @@ export class SkinUtils {
       )
     );
     defaultSkins.set(
-      "odin",
+      WeaponIds.odin,
       new Skin(
         weaponDefaultSkinUUIDs.operator,
         `Standard ${weaponNames.odin}`,

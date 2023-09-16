@@ -1,6 +1,6 @@
 {
-  "name": "tauri-app",
-  "version": "0.0.6",
+  "name": "waiua-re",
+  "version": "0.0.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
