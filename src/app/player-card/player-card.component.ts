@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api";
 import { PlayerData } from "../objects/player-data";
 import { weaponNames } from "../helpers/weapon-names.enum";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { WeaponIds } from "../helpers/weapon-default-skin-infos.enum";
 
 @Component({
   selector: "app-player-card",
@@ -11,7 +12,7 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 })
 export class PlayerCardComponent {
   faUsers = faUsers;
-  weaponNames = weaponNames;
+  WeaponIds = WeaponIds;
   @Input() playerData: PlayerData = new PlayerData({});
   @Input() name: string = "";
   @Input() agent: string = "";

@@ -24,10 +24,11 @@ export class PlayerData {
   previousRanks: Map<number, TierInformation>;
   /** Player UUID */
   PUUID: string | undefined;
-  skins: Map<string, Skin>; // weapon name / skin infos
+  skins: Map<string, Skin>; // weapon name ids from enum / skin infos
   agent?: AgentData;
   accountLevel: number;
   matchHistory: Map<number, MatchUpdate>;
+  teamId: "Blue" | "Red";
 
   constructor(obj: Partial<PlayerData>) {
     Object.assign(this, obj);
@@ -45,6 +46,7 @@ export class PlayerData {
     this.partyUUID = obj.partyUUID || "";
     this.previousRanks = obj.previousRanks || this.defaultPreviousRanks();
     this.matchHistory = obj.matchHistory || this.defaultMatchHistory();
+    this.teamId = obj.teamId || "Red";
   }
   public setName(name: string): void {
     this.name = name;
