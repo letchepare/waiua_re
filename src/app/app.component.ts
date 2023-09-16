@@ -45,7 +45,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       this.defPlayerList.push(new PlayerData({ name: `Player ${i}` }));
     }
 
-    this.createUpdateTimer();
+    // this.createUpdateTimer();
   }
 
   createUpdateTimer() {

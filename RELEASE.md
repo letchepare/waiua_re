@@ -1,8 +1,8 @@
-# Version 0.0.7
+# Version 0.0.8
 
 ## This version contains the following new functionnalities:
 
-- Showing vandal and phantom skins, later version is planned to show all skins
+
 ## This version contains the following bug fixes:
 
-- Fixed previous RR color
+- Reduced loading data time

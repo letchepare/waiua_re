@@ -419,7 +419,7 @@ export class RSOServiceService {
           });
         }
       );
-      await this.setSkins(players);
+      this.setSkins(players);
       let blueTeamPlayerData = players.filter(
         (player) => player.teamId === PreGameMatchTeamIds.defender
       );
@@ -432,6 +432,9 @@ export class RSOServiceService {
       blueTeamNames.forEach((name) =>
         blueTeamNamesMap.set(name.Subject, name.GameName + "#" + name.TagLine)
       );
+      blueTeamPlayerData.forEach((player) => {
+        player.name = blueTeamNamesMap.get(player.PUUID!) || "----";
+      });
 
       const redTeamUUIDs = redTeamPlayerData.map((player) => player.PUUID!);
       const redTeamNames = await this.getUserNamesByPUUIDs(redTeamUUIDs);
@@ -439,6 +442,10 @@ export class RSOServiceService {
       redTeamNames.forEach((name) =>
         redTeamNamesMap.set(name.Subject, name.GameName + "#" + name.TagLine)
       );
+
+      redTeamPlayerData.forEach((player) => {
+        player.name = redTeamNamesMap.get(player.PUUID!) || "----";
+      });
       return { redTeamPlayerData, blueTeamPlayerData };
     } catch (e) {
       throw e;
