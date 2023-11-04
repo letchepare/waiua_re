@@ -21,7 +21,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.css","node_modules/@sweetalert2/theme-dark/dark.scss"],
+            "styles": ["src/styles.css","node_modules/@sweetalert2/theme-dark/dark.scss","node_modules/ngx-toastr/toastr.css"],
             "scripts": [],
             "allowedCommonJsDependencies": ["buffer"]
           },

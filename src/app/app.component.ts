@@ -5,10 +5,11 @@ import {
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { http } from "@tauri-apps/api";
-import { PlayerData, PlayerDataDefaultValues } from "./objects/player-data";
+import { PlayerData } from "./objects/player-data";
 import { RSOServiceService } from "./services/rsoservice.service";
 import { gameType } from "./objects/api-objects/game-type.enum";
 import { SwalComponent } from "@sweetalert2/ngx-sweetalert2/public-api";
+import { ToastrService, IndividualConfig } from "ngx-toastr";
 
 @Component({
   selector: "app-root",
@@ -29,7 +30,16 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   refreshInfosTimer: any;
 
-  constructor(private RSOService: RSOServiceService) {}
+  TOASTR_MESSAGE_OPTIONS: Partial<IndividualConfig> = {
+    progressBar: true,
+    positionClass: "toast-top-center",
+    closeButton: true,
+  };
+
+  constructor(
+    private RSOService: RSOServiceService,
+    private toastr: ToastrService
+  ) {}
 
   ngAfterViewInit() {}
   ngOnInit() {
@@ -215,15 +225,23 @@ export class AppComponent implements AfterViewInit, OnInit {
 
           break;
         default:
+          this.toastr.warning("", "No game found", this.TOASTR_MESSAGE_OPTIONS);
+          this.loadingData.close();
           return false;
       }
+      this.toastr.success("", "Game found", this.TOASTR_MESSAGE_OPTIONS);
 
       // set party colors by party ids
       this.setPartyIds();
       // close loading overlay
       this.loadingData.close();
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      this.toastr.error(
+        "",
+        "Error While fetching data",
+        this.TOASTR_MESSAGE_OPTIONS
+      );
       this.loadingData.close();
     }
   }
@@ -268,7 +286,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       }
     });
   }
-  afficheListAgents(event: SubmitEvent): void {
+  showAgentList(event: SubmitEvent): void {
     event.preventDefault();
 
     http

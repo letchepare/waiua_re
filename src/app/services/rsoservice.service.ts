@@ -102,8 +102,10 @@ export class RSOServiceService {
       CustomHeaderNames.RiotClientPlatform,
       CustomHeaderValues.RiotClientPlatform
     );
-    const response = await invoke<string>("http_get", {
+    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    const response = await invoke<string>("http_get_bearer_auth", {
       url,
+      bearer: this.accessToken,
       headers,
     });
     const fetchContentResponse: FetchContentResponse = JSON.parse(response);
@@ -172,7 +174,6 @@ export class RSOServiceService {
     this.accessToken = entitlementResponse.accessToken;
     this.entitlementToken = entitlementResponse.token;
     this.PUUID = entitlementResponse.subject;
-    `logged as ${this.PUUID}`;
   }
 
   public async localRegion(): Promise<void> {
@@ -202,7 +203,6 @@ export class RSOServiceService {
     let valorantSession = sessionArray.find((item, index, array) => {
       return item.productId === "valorant";
     });
-    valorantSession;
     const region = valorantSession?.launchConfiguration.arguments[4].split(
       "="
     )[1];
@@ -226,7 +226,6 @@ export class RSOServiceService {
     });
     const valAPIVersionResponse: ValAPIVersionResponse = JSON.parse(response);
     const version = `${valAPIVersionResponse.data.riotClientVersion}`;
-
     return version;
   }
 
