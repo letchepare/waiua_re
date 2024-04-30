@@ -258,12 +258,7 @@ export class RSOServiceService {
     } catch (e) {
       // no started game yet, fetching for pregame
       try {
-        headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
-        headers.set(
-          "X-Riot-ClientPlatform",
-          "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
-        );
-        headers.set("X-Riot-ClientVersion", this.version);
+        let headers = await this.getDefaultHeaders();
         const response = await invoke<string>("http_get_bearer_auth", {
           url: `https://glz-${this.shard}-1.${this.region}.a.pvp.net/pregame/v1/players/${this.PUUID}`,
           bearer: this.accessToken,
