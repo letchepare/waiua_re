@@ -230,8 +230,7 @@ export class RSOServiceService {
   }
 
   public async checkLogin(): Promise<boolean> {
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_get_bearer_auth", {
         url: `https://pd.${this.region}.a.pvp.net/account-xp/v1/players/${this.PUUID}`,
@@ -245,8 +244,7 @@ export class RSOServiceService {
   }
 
   public async checkMatch(): Promise<gameType> {
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_get_bearer_auth", {
         url: `https://glz-${this.shard}-1.${this.region}.a.pvp.net/core-game/v1/players/${this.PUUID}`,
@@ -260,6 +258,12 @@ export class RSOServiceService {
     } catch (e) {
       // no started game yet, fetching for pregame
       try {
+        headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+        headers.set(
+          "X-Riot-ClientPlatform",
+          "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
+        );
+        headers.set("X-Riot-ClientVersion", this.version);
         const response = await invoke<string>("http_get_bearer_auth", {
           url: `https://glz-${this.shard}-1.${this.region}.a.pvp.net/pregame/v1/players/${this.PUUID}`,
           bearer: this.accessToken,
@@ -271,6 +275,7 @@ export class RSOServiceService {
       } catch (e) {
         this.pregameId = undefined;
         this.coreGameId = undefined;
+        console.error(e);
 
         return gameType.none;
       }
@@ -288,8 +293,7 @@ export class RSOServiceService {
 
     let blueTeamPlayerData: PlayerData[] = [];
     let redTeamPlayerData: PlayerData[] = [];
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_get_bearer_auth", {
         url: `https://glz-${this.region}-1.${this.shard}.a.pvp.net/pregame/v1/matches/${this.pregameId}`,
@@ -345,13 +349,7 @@ export class RSOServiceService {
   ): Promise<number | false> {
     if (!this.seasonData.get(SeasonName.currentSeason) || !this.version)
       return false;
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
-    headers.set(
-      CustomHeaderNames.RiotClientPlatform,
-      CustomHeaderValues.RiotClientPlatform
-    );
-    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_get_bearer_auth", {
         url: `https://pd.${this.shard}.a.pvp.net/mmr/v1/players/${puuid}`,
@@ -394,8 +392,7 @@ export class RSOServiceService {
     | false
   > {
     if (!this.coreGameId) return false;
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_get_bearer_auth", {
         url: `https://glz-${this.region}-1.${this.shard}.a.pvp.net/core-game/v1/matches/${this.coreGameId}`,
@@ -454,8 +451,7 @@ export class RSOServiceService {
   public async getUserNamesByPUUIDs(
     PUUIDs: string[]
   ): Promise<NameServiceResponse[]> {
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    let headers = await this.getDefaultHeaders();
     try {
       const response = await invoke<string>("http_put_bearer_auth", {
         url: `https://pd.${this.shard}.a.pvp.net/name-service/v2/players`,
@@ -535,19 +531,10 @@ export class RSOServiceService {
   }
 
   async getPlayerHistory(player: PlayerData): Promise<any> {
-    if (!this.version) {
-      this.version = await this.getCurrentVersionFromValApi();
-    }
     const url = `https://pd.${this.shard}.a.pvp.net/mmr/v1/players/${player.PUUID}`;
     const playerRankInfo: Map<string, TierInformation> = new Map();
     // get MMR infos
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
-    headers.set(
-      CustomHeaderNames.RiotClientPlatform,
-      CustomHeaderValues.RiotClientPlatform
-    );
-    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    let headers = await this.getDefaultHeaders();
     const response = await invoke<string>("http_get_bearer_auth", {
       url: url,
       bearer: this.accessToken,
@@ -595,17 +582,8 @@ export class RSOServiceService {
   }
 
   async getMatchHistory(player: PlayerData): Promise<void> {
-    if (!this.version) {
-      this.version = await this.getCurrentVersionFromValApi();
-    }
     const url = `https://pd.${this.region}.a.pvp.net/mmr/v1/players/${player.PUUID}/competitiveupdates?queue=competitive`;
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
-    headers.set(
-      CustomHeaderNames.RiotClientPlatform,
-      CustomHeaderValues.RiotClientPlatform
-    );
-    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    let headers = await this.getDefaultHeaders();
     const response = await invoke<string>("http_get_bearer_auth", {
       url: url,
       bearer: this.accessToken,
@@ -633,19 +611,10 @@ export class RSOServiceService {
   }
 
   async setSkins(players: PlayerData[]): Promise<void> {
-    if (!this.version) {
-      this.version = await this.getCurrentVersionFromValApi();
-    }
     const skinSocketId = "3ad1b2b2-acdb-4524-852f-954a76ddae0a";
     const skinUrlInfos = "https://valorant-api.com/v1/weapons/skinchromas";
     const url = `https://glz-${this.region}-1.${this.shard}.a.pvp.net/core-game/v1/matches/${this.coreGameId}/loadouts`;
-    let headers = new Map<string, string>();
-    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
-    headers.set(
-      CustomHeaderNames.RiotClientPlatform,
-      CustomHeaderValues.RiotClientPlatform
-    );
-    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    let headers = await this.getDefaultHeaders();
     const response = await invoke<string>("http_get_bearer_auth", {
       url: url,
       bearer: this.accessToken,
@@ -678,5 +647,19 @@ export class RSOServiceService {
       // next player
       index++;
     }
+  }
+
+  private async getDefaultHeaders() {
+    if (!this.version) {
+      this.version = await this.getCurrentVersionFromValApi();
+    }
+    let headers = new Map<string, string>();
+    headers.set("X-Riot-Entitlements-JWT", this.entitlementToken || "");
+    headers.set(
+      CustomHeaderNames.RiotClientPlatform,
+      CustomHeaderValues.RiotClientPlatform
+    );
+    headers.set(CustomHeaderNames.riotClientVersion, this.version);
+    return headers;
   }
 }
